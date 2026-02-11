@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: laravel_app
+    ports:
+      - "8000:80"
+      - "8001:80"
+      - "8002:80"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_DATABASE: laravel
+      DB_USERNAME: root
+      DB_PASSWORD: secret
+    volumes:
+      - .:/var/www/html
+    networks:
+      - laravel_net
+
+  db:
+    image: mysql:8
+    container_name: laravel_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: laravel
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - laravel_net
+
+volumes:
+  db_data:
+
+networks:
+  laravel_net:
